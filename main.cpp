@@ -82,6 +82,14 @@ int main(const int argc, const char *argv[]) {
     std::cout << std::fixed << std::setprecision(2);
     std::cout << "Compression ratio:  " << compressionRatio << "x" << std::endl;
 
+    std::cout << std::endl;
+    std::cout << "Security policy" << std::endl;
+    std::cout << "---------------" << std::endl;
+    std::cout << "Maximum expanded size: " << policy.maxUncompressedSize << " bytes" << std::endl;
+    std::cout << "Maximum file count:    " << policy.maxFileCount << std::endl;
+    std::cout << "Maximum single file:   " << policy.maxSingleFileSize << " bytes" << std::endl;
+    std::cout << std::endl;
+
     if (verdict == SecurityVerdict::Allow){
         std::cout << "Security verdict: ALLOW" << std::endl;
     }
