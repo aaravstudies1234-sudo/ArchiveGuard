@@ -42,13 +42,11 @@ int main(const int argc, const char *argv[]) {
     for (zip_uint64_t i = 0; i < static_cast<zip_uint64_t>(entryCount); ++i){
         zip_stat_t entryStat;
         zip_stat_init(&entryStat);
-        if(zip_stat_index(archive, i, ZIP_FL_UNCHANGED, &entryStat) != 0){
+        if (zip_stat_index(archive, i, ZIP_FL_UNCHANGED, &entryStat) != 0){
             std::cerr << "ArchiveGuard: failed to read entry " << i << std::endl;
             continue;
         }
-        const std::string entryName =
-        entryStat.name != nullptr
-        ? entryStat.name: "";
+        const std::string entryName = entryStat.name != nullptr ? entryStat.name: "";
         if (const bool isDirectory = !entryName.empty() && entryName.back() == '/'){
             continue;
         }
@@ -58,15 +56,6 @@ int main(const int argc, const char *argv[]) {
         entry.uncompressedSize = entryStat.size;
         entry.isDirectory = false;
         stats.entries.push_back(entry);
-        stats.fileCount++;
-        stats.compressedSize += entryStat.comp_size;
-        stats.uncompressedSize += entryStat.size;
-        if (entryStat.size > stats.largestFile){
-            stats.largestFile = entryStat.size;
-        }
-        if(entryStat.name != nullptr && entryStat.name[0] != '\0' && entryStat.name[std::string(entryStat.name).size() - 1] == '/'){
-            continue;
-        }
         stats.fileCount++;
         stats.compressedSize += entryStat.comp_size;
         stats.uncompressedSize += entryStat.size;
