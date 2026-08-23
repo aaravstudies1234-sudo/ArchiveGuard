@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(ArchiveGuard
         main.cpp
+        archive_stats.hpp
         policy.hpp
         policy.cpp
 )
