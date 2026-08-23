@@ -64,8 +64,7 @@ int main(const int argc, const char *argv[]) {
         compressionRatio = static_cast<double>(stats.uncompressedSize) / static_cast<double>(stats.compressedSize);
     }
 
-    constexpr SecurityPolicy policy;
-    const SecurityVerdict verdict = evaluatePolicy(stats, policy);
+    PolicyResult policyResult = evaluatePolicy(stats, policy);
 
     std::cout << std::endl;
     std::cout << "ArchiveGuard v0.1" << std::endl;
@@ -90,11 +89,25 @@ int main(const int argc, const char *argv[]) {
     std::cout << "Maximum single file:   " << policy.maxSingleFileSize << " bytes" << std::endl;
     std::cout << std::endl;
 
-    if (verdict == SecurityVerdict::Allow){
-        std::cout << "Security verdict: ALLOW" << std::endl;
+    std::cout << "Security verdict: ";
+    switch (policyResult.verdict){
+        case SecurityVerdict::Allow:
+            std::cout << "ALLOW" << std::endl;
+            break;
+        case SecurityVerdict::Warn:
+            std::cout << "WARN" << std::endl;
+            break;
+        case SecurityVerdict::Block:
+            std::cout << "BLOCK" << std::endl;
+            break;
     }
-    else{
-        std::cout << "Security verdict: BLOCK\n" << std::endl;
+    if (!policyResult.violations.empty()){
+        std::cout << std::endl;
+        std::cout << "Policy violations" << std::endl;
+        std::cout << "-----------------" << std::endl;
+        for (const auto& violation : policyResult.violations){
+            std::cout << "[!] " << violation.message << std::endl;
+        }
     }
 
     std::cout << std::endl;
