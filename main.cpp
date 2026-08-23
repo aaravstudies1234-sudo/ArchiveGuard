@@ -46,6 +46,24 @@ int main(const int argc, const char *argv[]) {
             std::cerr << "ArchiveGuard: failed to read entry " << i << std::endl;
             continue;
         }
+        const std::string entryName =
+        entryStat.name != nullptr
+        ? entryStat.name: "";
+        if (const bool isDirectory = !entryName.empty() && entryName.back() == '/'){
+            continue;
+        }
+        ArchiveEntry entry;
+        entry.name = entryName;
+        entry.compressedSize = entryStat.comp_size;
+        entry.uncompressedSize = entryStat.size;
+        entry.isDirectory = false;
+        stats.entries.push_back(entry);
+        stats.fileCount++;
+        stats.compressedSize += entryStat.comp_size;
+        stats.uncompressedSize += entryStat.size;
+        if (entryStat.size > stats.largestFile){
+            stats.largestFile = entryStat.size;
+        }
         if(entryStat.name != nullptr && entryStat.name[0] != '\0' && entryStat.name[std::string(entryStat.name).size() - 1] == '/'){
             continue;
         }
@@ -64,7 +82,8 @@ int main(const int argc, const char *argv[]) {
         compressionRatio = static_cast<double>(stats.uncompressedSize) / static_cast<double>(stats.compressedSize);
     }
 
-    PolicyResult policyResult = evaluatePolicy(stats, policy);
+    constexpr SecurityPolicy policy;
+    const PolicyResult policyResult = evaluatePolicy(stats, policy);
 
     std::cout << std::endl;
     std::cout << "ArchiveGuard v0.1" << std::endl;
@@ -110,6 +129,19 @@ int main(const int argc, const char *argv[]) {
         }
     }
 
+    std::cout << std::endl;
+    std::cout << "Archive entries" << std::endl;
+    std::cout << "---------------" << std::endl;
+    for (const auto& entry : stats.entries){
+        double ratio = 0.0;
+        if (entry.compressedSize > 0){
+            ratio = static_cast<double>(entry.uncompressedSize) / static_cast<double>(entry.compressedSize);
+        }
+        std::cout << entry.name << std::endl;
+        std::cout << "  Compressed:   " << entry.compressedSize << " bytes" << std::endl;
+        std::cout << "  Uncompressed: " << entry.uncompressedSize << " bytes" << std::endl;
+        std::cout << "  Ratio:        " << std::fixed << std::setprecision(2) << ratio << "x" << std::endl;
+    }
     std::cout << std::endl;
     return 0;
 }
