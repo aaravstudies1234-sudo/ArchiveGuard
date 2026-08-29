@@ -5,6 +5,7 @@
 #include <zip.h>
 #include "archive_stats.hpp"
 #include "policy.hpp"
+#include "path_security.hpp"
 
 int main(const int argc, const char *argv[]) {
     if (argc != 2) {
@@ -92,9 +93,10 @@ int main(const int argc, const char *argv[]) {
     std::cout << std::endl;
     std::cout << "Security policy" << std::endl;
     std::cout << "---------------" << std::endl;
-    std::cout << "Maximum expanded size: " << policy.maxUncompressedSize << " bytes" << std::endl;
-    std::cout << "Maximum file count:    " << policy.maxFileCount << std::endl;
-    std::cout << "Maximum single file:   " << policy.maxSingleFileSize << " bytes" << std::endl;
+    std::cout << "Maximum expanded size:     " << policy.maxUncompressedSize << " bytes" << std::endl;
+    std::cout << "Maximum file count:        " << policy.maxFileCount << std::endl;
+    std::cout << "Maximum single file:       " << policy.maxSingleFileSize << " bytes" << std::endl;
+    std::cout << "Maximum compression ratio: " << policy.maxCompressionRatio << "x" << std::endl;
     std::cout << std::endl;
 
     std::cout << "Security verdict: ";

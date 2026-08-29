@@ -12,6 +12,8 @@ add_executable(ArchiveGuard
         archive_entry.hpp
         policy.hpp
         policy.cpp
+        path_security.cpp
+        path_security.hpp
 )
 
 find_library(LIBZIP_LIBRARY
